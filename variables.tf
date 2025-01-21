@@ -4,3 +4,5 @@ variable "cf_domain" {
   default = "jcloud.com.br"
   type    = string
 }
+
+variable "cloudflare_zone_id" {}
