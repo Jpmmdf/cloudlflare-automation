@@ -1,14 +1,7 @@
-resource "cloudflare_dns_record" "example_dns_record" {
+resource "cloudflare_record" "any_record_a" {
   zone_id = cloudflare_zone.domain_zone.id
-  comment = "Domain verification record"
+  name    = "demo1.jcloud.com"
   content = "198.51.100.4"
-  name = "demo1.jcloud.com"
+  type    = "A"
   proxied = true
-  settings = {
-    ipv4_only = true
-    ipv6_only = true
-  }
-  tags = ["owner:dns-team"]
-  ttl = 3600
-  type = "A"
 }

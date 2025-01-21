@@ -1,6 +1,6 @@
 terraform {
   cloud {
-    organization = "JPITCORP"  
+    organization = "JPITCORP"
 
     workspaces {
       name = "cloudlflare-automation"
