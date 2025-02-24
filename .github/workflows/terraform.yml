@@ -4,9 +4,9 @@ on:
 
 env:
   tf_version: '1.10.5'
-  tg_version: ' 0.73.12'
+  tg_version: '0.73.12'
   working_dir: 'terraform'
-
+  tg_add_approve: true
 jobs:
   checks:
     runs-on: ubuntu-latest
@@ -20,7 +20,7 @@ jobs:
           tf_version: ${{ env.tf_version }}
           tg_version: ${{ env.tg_version }}
           tg_dir: ${{ env.working_dir }}
-          tg_command: 'hclfmt --terragrunt-check --terragrunt-diff'
+          tg_command: 'hclfmt --check --diff'
 
   plan:
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
           tf_version: ${{ env.tf_version }}
           tg_version: ${{ env.tg_version }}
           tg_dir: ${{ env.working_dir }}
-          tg_command: 'plan'
+          tg_command: 'plan-all'
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,4 +52,4 @@ jobs:
           tf_version: ${{ env.tf_version }}
           tg_version: ${{ env.tg_version }}
           tg_dir: ${{ env.working_dir }}
-          tg_command: 'apply'
+          tg_command: 'apply-all'
