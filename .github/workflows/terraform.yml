@@ -37,8 +37,8 @@ jobs:
           tg_dir: ${{ env.working_dir }}
           tg_command: 'plan-all'
         env:
-          TF_VAR_CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
-          TF_VAR_CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN}} 
+          CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN}} 
 
   deploy:
     runs-on: ubuntu-latest
@@ -57,5 +57,5 @@ jobs:
           tg_dir: ${{ env.working_dir }}
           tg_command: 'apply-all'
         env:
-          TF_VAR_CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
-          TF_VAR_CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN}} 
+          CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN}} 
