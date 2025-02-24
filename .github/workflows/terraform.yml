@@ -35,7 +35,7 @@ jobs:
           tf_version: ${{ env.tf_version }}
           tg_version: ${{ env.tg_version }}
           tg_dir: ${{ env.working_dir }}
-          tg_command: 'plan-all'
+          tg_command: 'run-all plan'
         env:
           CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN}} 
@@ -55,7 +55,8 @@ jobs:
           tf_version: ${{ env.tf_version }}
           tg_version: ${{ env.tg_version }}
           tg_dir: ${{ env.working_dir }}
-          tg_command: 'apply-all'
+          tg_add_approve: ${{ env.tg_add_approve }}
+          tg_command: 'run-all apply'
         env:
           CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN}} 
