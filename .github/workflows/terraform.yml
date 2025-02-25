@@ -1,5 +1,6 @@
 name: 'Terragrunt GitHub Actions'
 on:
+  push:  # Roda para qualquer push em qualquer branch
   pull_request:
     types:
       - closed
