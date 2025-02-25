@@ -1,6 +1,8 @@
 name: 'Terragrunt GitHub Actions'
 on:
-  - pull_request
+  pull_request:
+    types:
+      - closed
 
 env:
   tf_version: '1.10.5'
@@ -44,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ plan ]
     environment: 'prod'
-    if: github.ref == 'refs/heads/main'
+    if: github.event.pull_request.merged == true && github.ref == 'refs/heads/main'
     steps:
       - name: 'Checkout'
         uses: actions/checkout@main
