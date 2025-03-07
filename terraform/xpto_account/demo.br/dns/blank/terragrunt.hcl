@@ -11,9 +11,9 @@ include "root" {
 inputs = {
   dns_records = [
     {
-      name        = "www"
+      name        = "demo"
       type        = "A"
-      value       = "192.168.1.1"
+      value       = "192.168.1.5"
       ttl         = 1
       proxied     = false
       comment     = "Criado pelo Terraform"

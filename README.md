@@ -10,81 +10,83 @@ Este repositório contém a configuração para automação da gestão de DNS no
 - **Terragrunt**: Gerenciamento e organização modular do Terraform.
 - **Cloudflare**: Gerenciamento de DNS.
 - **Backstage**: Interface para automação dos registros DNS.
-- **Github Actions**: Automatização do fluxo de aplicação das mudanças.
 - **MkDocs**: Ferramenta para documentação do projeto.
 
 ## Estrutura do Repositório
 
-Seguindo as **melhores práticas do Cloudflare** conforme descrito na [documentação oficial](https://developers.cloudflare.com/terraform/advanced-topics/best-practices/), utilizamos uma estrutura baseada em **contas, zonas e produtos**.
-
-&#x20;
+A estrutura foi reorganizada para utilizar **Terragrunt**, facilitando a gestão modular e reutilizável das zonas DNS e outros módulos do Cloudflare, como **Page Rules, WAF e Rate Limiting**.
 
 ```plaintext
 terraform/
-├── terragrunt.hcl                        # Configuração global do Terragrunt
+├── root.hcl                              # Configuração global do Terragrunt
 ├── xpto_account                           # Conta principal
-│   ├── users                             # Diretório para gestão de usuários (zoneless)
-│   │   ├── provider.tf                   # Configuração do provider Cloudflare
-│   │   ├── users.tf                      # Gestão de usuários
-│   │   └── vars.tf                        # Variáveis
-│   ├── xpto.br                            # zona principal
+│   ├── demo.br                           # Zona "demo.br"
 │   │   ├── dns                           # Diretório para registros DNS
-│   │   │   ├── provider.tf                # Provider do Cloudflare
-│   │   │   ├── vars.tf                    # Variáveis do DNS
-│   │   │   ├── dns.tf                     # Registros DNS agrupados por produto
-│   │   ├── page_rules                    # Diretório para regras de página
-│   │   │   ├── provider.tf                # Provider do Cloudflare
-│   │   │   ├── vars.tf                    # Variáveis de Page Rules
-│   │   │   ├── page_rules.tf              # Configuração de regras de página
-│   ├── outra_zona                         # Outra zona gerenciada
-│   │   ├── dns
-│   │   │   ├── provider.tf
-│   │   │   ├── vars.tf
-│   │   │   ├── dns.tf
-│   │   ├── page_rules
-│   │   │   ├── provider.tf
-│   │   │   ├── vars.tf
-│   │   │   ├── page_rules.tf
+│   │   │   ├── root                      # Configuração para raiz da zona
+│   │   │   │   ├── terragrunt.hcl        # Configuração do Terragrunt
+│   │   │   ├── www                       # Configuração para subdomínio www
+│   │   │   │   ├── terragrunt.hcl        # Configuração do Terragrunt
+│   │   ├── page_rules                    # Configuração de regras de página
+│   │   │   ├── terragrunt.hcl            # Configuração do Page Rules
+│   │   ├── waf                           # Configuração do WAF
+│   │   │   ├── terragrunt.hcl            # Configuração do WAF
+│   │   ├── rate_limiting                 # Configuração do Rate Limiting
+│   │   │   ├── terragrunt.hcl            # Configuração do Rate Limiting
+│   ├── shared                            # Módulos compartilhados
+│   │   ├── core
+│   │   │   ├── dns                       # Configuração base do DNS
+│   │   │   │   ├── dns.tf                # Definição dos registros DNS
+│   │   │   │   ├── providers.tf          # Configuração do provider Cloudflare
+│   │   │   │   ├── vars.tf               # Variáveis utilizadas
+│   │   │   ├── page_rules                # Módulo compartilhado de Page Rules
+│   │   │   ├── waf                       # Módulo compartilhado de WAF
+│   │   │   ├── rate_limiting             # Módulo compartilhado de Rate Limiting
+```
+
+## Configuração do Backend no Terragrunt
+
+A configuração do backend para armazenar o **estado remoto** está definida globalmente no `root.hcl`, utilizando **S3 e DynamoDB**:
+
+```hcl
+remote_state {
+  backend = "s3"
+  config = {
+    bucket         = "SEU_BUCKET_TERRAFORM_STATE"
+    key            = "terraform.tfstate"
+    region         = "REGION"
+    encrypt        = true
+    dynamodb_table = "NOME_DA_TABELA_DYNAMODB"
+  }
+}
+```
+
+Cada ambiente herda essa configuração através do `include` nos arquivos `terragrunt.hcl`:
+
+```hcl
+include {
+  path = find_in_parent_folders()
+}
 ```
 
 ## Como Utilizar
 
-### 1️⃣ Configurar o Terraform
+### 1️⃣ Inicializar o Terraform
 
 ```sh
-terraform init
-terraform plan
-terraform apply -auto-approve
+terragrunt run-all init
 ```
 
-### 2️⃣ Utilizar o Terragrunt
+### 2️⃣ Aplicar as Mudanças com Terragrunt
 
 ```sh
 terragrunt run-all apply
 ```
 
-### 3️⃣ Pipeline GitLab CI/CD
+Se precisar aplicar apenas um ambiente específico:
 
-O pipeline do GitLab executa automaticamente a validação e aplicação dos registros.
-Exemplo de `.gitlab-ci.yml`:
-
-```yaml
-stages:
-  - validate
-  - apply
-
-validate:
-  script:
-    - terraform init
-    - terraform validate
-  only:
-    - merge_requests
-
-apply:
-  script:
-    - terraform apply -auto-approve
-  only:
-    - main
+```sh
+cd terraform/xpto_account/demo.br/dns/root
+terragrunt apply
 ```
 
 ## Contribuindo
@@ -101,7 +103,7 @@ Dúvidas ou sugestões? Entre em contato com a equipe responsável.
 
 ---
 
-Essa documentação está em constante evolução. Para mais detalhes, consulte a pasta `docs/`.
+Esta documentação está em constante evolução. Para mais detalhes, consulte a pasta `docs/`.
 
 ## Documentação
 Este projeto utiliza **MkDocs** para organizar e manter a documentação. Para visualizar a documentação localmente, execute:
@@ -117,4 +119,3 @@ mkdocs build
 ```
 
 Para mais detalhes, consulte o arquivo `mkdocs.yml`.
-

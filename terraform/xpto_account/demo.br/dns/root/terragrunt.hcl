@@ -1,16 +1,14 @@
 # terragrunt.hcl
 
 terraform {
-  source = "../"
+  source = "${get_repo_root()}/terraform/shared/core/dns"
 }
-locals {
-  cf_api_token = get_env("CLOUDFLARE_API_TOKEN", "")
-  cf_zone_id   = get_env("CLOUDFLARE_ZONE_ID", "")
+
+include "root" {
+  path = find_in_parent_folders("root.hcl")
 }
 
 inputs = {
-  cloudflare_api_token = local.cf_api_token
-  cloudflare_zone_id   = local.cf_zone_id
   dns_records = [
     {
       name        = "xpto"
