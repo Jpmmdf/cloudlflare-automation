@@ -31,9 +31,19 @@ A role concede permissões mínimas para:
         {
             "Effect": "Allow",
             "Action": [
-                "s3:GetObject",
-                "s3:PutObject",
-                "s3:ListBucket"
+				"s3:GetObject",
+				"s3:PutObject",
+				"s3:ListBucket",
+				"s3:GetBucketPolicy",
+				"s3:GetBucketVersioning",
+				"s3:GetEncryptionConfiguration",
+				"s3:GetBucketPublicAccessBlock",
+				"s3:GetBucketAcl",
+				"s3:PutBucketPolicy",
+				"s3:PutBucketVersioning",
+				"s3:PutEncryptionConfiguration",
+				"s3:PutBucketPublicAccessBlock",
+				"s3:ListBucketVersions"
             ],
             "Resource": [
                 "arn:aws:s3:::SEU_BUCKET_TERRAFORM_STATE",
