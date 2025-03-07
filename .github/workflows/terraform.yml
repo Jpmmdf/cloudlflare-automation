@@ -1,6 +1,9 @@
 name: 'Terragrunt GitHub Actions'
 on:
+  push:
   pull_request:
+    branches:
+      - master
     types:
       - closed
 
@@ -34,7 +37,6 @@ jobs:
           RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
             -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
             -H "Content-Type: application/json")
-
           if [[ "$RESPONSE" -ne 200 ]]; then
             echo "❌ Cloudflare API token is invalid!"
             exit 1
@@ -51,6 +53,13 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@main
 
+      - name: 'Configure AWS Credentials'
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
       - name: Plan
         uses: gruntwork-io/terragrunt-action@v2
         with:
@@ -61,6 +70,7 @@ jobs:
         env:
           CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }} 
+          TF_VAR_STATE_BUCKET: ${{ secrets.TF_VAR_STATE_BUCKET }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -70,6 +80,13 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@main
+
+      - name: 'Configure AWS Credentials'
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Deploy
         uses: gruntwork-io/terragrunt-action@v2
@@ -82,3 +99,4 @@ jobs:
         env:
           CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }} 
+          TF_VAR_STATE_BUCKET: ${{ secrets.TF_VAR_STATE_BUCKET }}

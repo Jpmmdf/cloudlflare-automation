@@ -79,16 +79,34 @@ def get_subpath(record_name: str, zone_name: str) -> str:
 def format_record_hcl(record: Dict[str, Any]) -> str:
     """
     Constrói o trecho HCL para cada item do 'dns_records'.
-    Ajuste as chaves conforme sua estrutura.
+    Ajusta o tratamento específico para registros MX.
     """
-    # Usa "content" se existir, senão "value"
-    record_value = record.get("content", record.get("value", ""))
     comment = record.get("comment", "Importado")
     proxied = record.get("proxied", False)
     ttl = record.get("ttl", 120)
     owner = record.get("owner", "auto-import")
     environment = record.get("environment", "production")
 
+    # Tratamento específico para registros MX
+    if record["type"] == "MX":
+        priority = record.get("priority", 10)
+        record_value = record.get("content", "")
+        return f"""
+    {{
+      name        = "{record["name"]}"
+      type        = "{record["type"]}"
+      value       = "{record_value}"
+      priority    = {priority}
+      ttl         = {ttl}
+      proxied     = {str(proxied).lower()}
+      comment     = "{comment}"
+      settings    = {{}}
+      owner       = "{owner}"
+      environment = "{environment}"
+    }}"""
+
+    # Tratamento padrão para demais registros
+    record_value = record.get("content", record.get("value", ""))
     return f"""
     {{
       name        = "{record["name"]}"
@@ -101,7 +119,7 @@ def format_record_hcl(record: Dict[str, Any]) -> str:
       owner       = "{owner}"
       environment = "{environment}"
     }}"""
-
+    
 def generate_terragrunt_file(zone_name: str, zone_id: str, subpath: str, records: List[Dict[str, Any]]) -> None:
     """
     Cria um arquivo terragrunt.hcl (root module) em 'BASE_DIR/zone_name/dns/subpath/terragrunt.hcl'.
@@ -113,7 +131,11 @@ def generate_terragrunt_file(zone_name: str, zone_id: str, subpath: str, records
     record_blocks = [format_record_hcl(r) for r in records]
     joined_records = ",\n".join(record_blocks)
 
-    terragrunt_content = f"""terraform {{
+    terragrunt_content = f"""include "root" {{
+  path = find_in_parent_folders("root.hcl")
+}}
+
+terraform {{
   source = "${{get_repo_root()}}/terraform/shared/core/dns"
 }}
 

@@ -11,7 +11,7 @@ include "root" {
 inputs = {
   dns_records = [
     {
-      name        = "www"
+      name        = "demo-www"
       type        = "A"
       value       = "192.168.1.1"
       ttl         = 1

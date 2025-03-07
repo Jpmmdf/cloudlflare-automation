@@ -10,11 +10,12 @@ variable "dns_records" {
     settings    = optional(map(bool), {})
     owner       = string
     environment = string
+    priority    = optional(number)  # Novo campo adicionado
   }))
 }
 
 variable "cloudflare_zone_id" {
-  type = string
+  type        = string
   description = "ID da zona DNS no Cloudflare"
 }
 

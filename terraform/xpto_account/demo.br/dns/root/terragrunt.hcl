@@ -11,7 +11,7 @@ include "root" {
 inputs = {
   dns_records = [
     {
-      name        = "xpto"
+      name        = "demo-root"
       type        = "A"
       value       = "192.168.1.2"
       ttl         = 1
