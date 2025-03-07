@@ -68,8 +68,8 @@ jobs:
           tg_dir: ${{ env.working_dir }}
           tg_command: 'run-all plan'
         env:
-          CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }} 
+          TF_VAR_cloudflare_zone_id: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }} 
           TF_VAR_STATE_BUCKET: ${{ secrets.TF_VAR_STATE_BUCKET }}
 
   deploy:
@@ -97,6 +97,6 @@ jobs:
           tg_add_approve: ${{ env.tg_add_approve }}
           tg_command: 'run-all apply'
         env:
-          CLOUDFLARE_ZONE_ID: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }} 
+          TF_VAR_cloudflare_zone_id: ${{ secrets.TF_VAR_CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.TF_VAR_CLOUDFLARE_API_TOKEN }} 
           TF_VAR_STATE_BUCKET: ${{ secrets.TF_VAR_STATE_BUCKET }}
