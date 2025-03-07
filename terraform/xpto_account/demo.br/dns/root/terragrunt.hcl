@@ -13,7 +13,7 @@ inputs = {
     {
       name        = "demo-root"
       type        = "A"
-      value       = "192.168.1.2"
+      value       = "192.168.1.20"
       ttl         = 1
       proxied     = false
       comment     = "Criado pelo Terraform"
