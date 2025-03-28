@@ -1,1 +1,40 @@
-site_name: Clouflare
+site_name: Cloudflare Automation
+theme:
+  name: material
+  language: pt-BR
+nav:
+  - Home: index.md
+  - Arquitetura:
+      - Visão Geral: architecture/overview.md
+      - Componentes: architecture/components.md
+      - Diagramas: architecture/diagram.md
+  - Requisitos:
+      - Pré-requisitos: requirements/prerequisites.md
+      - Acessos e Tokens: requirements/access.md
+      - Versões de Software: requirements/software.md
+  - User Guide:
+      - Introdução: user-guide/getting-started.md
+      - Estrutura Terraform: user-guide/terraform-structure.md
+      - Gerenciamento DNS: user-guide/dns-management.md
+      - Solução de Problemas: user-guide/troubleshooting.md
+  - Operação:
+      - Deployment: operations/deployment.md
+      - Rollback: operations/rollback.md
+      - Monitoramento: operations/monitoring.md
+      - Manutenção: operations/maintenance.md
+  - Referências:
+      - Recursos Terraform: reference/terraform-resources.md
+      - Terragrunt: reference/terragrunt.md
+      - Provider Cloudflare v5: reference/cloudflare-provider.md
+
+plugins:
+  - search
+  - mermaid2
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - codehilite:
+      linenums: true
+  - attr_list
